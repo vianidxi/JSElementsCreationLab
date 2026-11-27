@@ -1,0 +1,68 @@
+LABORATORIO: CREACIÓN DE ELEMENTOS CON JAVASCRIPT (DOM + EVENTOS)
+Alumna: Vianidxi Ximena Cruz Fuentes
+
+PASO 1
+¿Por qué hay contenido en el body al abrir el archivo en el navegador, pero
+ese mismo contenido no aparece en el código fuente de VS Code?
+Porque ese contenido no está escrito en el HTML: lo genera JavaScript. Al
+cargar la página, el navegador ejecuta js/cards.js, que crea los elementos
+(div, h5, button) con document.createElement y los inserta en el body con
+appendChild. VS Code muestra el archivo index.html tal como está guardado,
+mientras que el navegador muestra el DOM, que es la versión de la página en
+memoria después de que el script la modificó. Si se inspecciona con las
+herramientas de desarrollador (F12 > Elements) sí aparece el contenido.
+
+PASO 2
+¿createCard es una función recursiva? Justifica tu respuesta.
+No es recursiva en sentido estricto. Una función recursiva se llama a sí
+misma directamente dentro de su ejecución. createCard solo registra
+createCard como manejador del evento click del botón; no la ejecuta en ese
+momento. La siguiente llamada ocurre después, cuando el usuario hace clic, y
+la hace el navegador. Por eso no se acumulan llamadas en la pila ni hay un
+caso base: cada ejecución termina antes de la siguiente.
+
+¿Qué representa el valor document en JavaScript?
+Es el objeto que representa toda la página web cargada (el DOM). Es el punto
+de entrada para leer y modificar el HTML desde JavaScript: buscar elementos
+(getElementById, querySelector), crear elementos nuevos (createElement),
+cambiar textos, clases, atributos, etc.
+
+¿Qué hace la función createElement?
+document.createElement("etiqueta") crea un nuevo elemento HTML del tipo
+indicado (por ejemplo un div o un button) en memoria. Todavía no se ve en la
+página hasta que se inserta en el DOM.
+
+¿Qué hace la función appendChild?
+Inserta un nodo como el último hijo de otro elemento. Con ella se arma la
+estructura (el h5 y el botón dentro de card-body, card-body dentro de card,
+etc.) y, al agregar la columna al body, el elemento aparece en la página.
+
+PASO 3
+¿Qué es la variable e?
+Es el objeto del evento (en este caso un PointerEvent/MouseEvent) que el
+navegador pasa automáticamente a la función que maneja el evento. Contiene
+información del clic: el tipo de evento, la posición del mouse, las teclas
+presionadas y, sobre todo, e.target, que es el elemento donde ocurrió el
+evento (el botón que se presionó). Con console.log(e) se ve todo en la
+consola.
+
+¿Cómo es que el botón cambia de color y se deshabilita?
+Usando e.target, que es el botón presionado: e.target.disabled = true lo
+deshabilita para que no se pueda volver a presionar;
+classList.remove("btn-outline-success") le quita la clase de Bootstrap que lo
+pinta verde y classList.add("btn-outline-danger") le agrega la clase que lo
+pinta rojo; e.target.innerText = "Clicked" cambia su texto.
+
+PASO 4
+¿Por qué aún no hay cambios visibles?
+Porque solo se crearon los elementos label e input con createElement, pero
+todavía no se insertaron en el DOM con appendChild. Existen en memoria, pero
+no forman parte de la página. Al agregar
+divCardBody.appendChild(labelFormLabel) y
+divCardBody.appendChild(inputFormControl) ya se muestran en cada card.
+
+Después se modificó el listener para pasar el valor del input como argumento
+a createCard(innerText), y createCard usa ese parámetro como texto del
+h5CardTitle. Así el texto escrito en el campo se vuelve el título de la
+siguiente card. Si el campo se deja vacío, se usa el número consecutivo como
+título.
